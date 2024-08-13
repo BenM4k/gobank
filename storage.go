@@ -13,14 +13,14 @@ type Storage interface {
 	UpdateAccount(*Account) error
 	GetAccountByID(int) (*Account, error)
 	GetAccountByNumber(int) (*Account, error)
-	GetAccounts()([]*Account, error)
+	GetAccounts() ([]*Account, error)
 }
 
 type PostgresStore struct {
 	db *sql.DB
 }
 
-func NewPostgresStore()(*PostgresStore, error) {
+func NewPostgresStore() (*PostgresStore, error) {
 	connStr := "user=bennym dbname=gobank password=bennymak sslmode=disable"
 
 	db, err := sql.Open("postgres", connStr)
@@ -28,7 +28,7 @@ func NewPostgresStore()(*PostgresStore, error) {
 		return nil, err
 	}
 
-	if err:= db.Ping(); err != nil {
+	if err := db.Ping(); err != nil {
 		return nil, err
 	}
 
@@ -37,7 +37,7 @@ func NewPostgresStore()(*PostgresStore, error) {
 	}, nil
 }
 
-func (s *PostgresStore) Init() error{
+func (s *PostgresStore) Init() error {
 	return s.createAccountTable()
 }
 
@@ -105,7 +105,7 @@ func (s *PostgresStore) GetAccountByID(id int) (*Account, error) {
 		return nil, err
 	}
 
-	for rows.Next(){
+	for rows.Next() {
 		return scanIntoAccount(rows)
 	}
 	return nil, fmt.Errorf("Account with id %d not found", id)
@@ -133,13 +133,13 @@ func (s *PostgresStore) GetAccounts() ([]*Account, error) {
 
 func scanIntoAccount(rows *sql.Rows) (*Account, error) {
 	account := new(Account)
-		err := rows.Scan(
-			&account.ID,
-			&account.FirstName,
-			&account.LastName,
-			&account.Number,
-			&account.Balance,
-			&account.CreatedAt,
-		)
+	err := rows.Scan(
+		&account.ID,
+		&account.FirstName,
+		&account.LastName,
+		&account.Number,
+		&account.Balance,
+		&account.CreatedAt,
+	)
 	return account, err
 }
